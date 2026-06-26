@@ -1,0 +1,19 @@
+{
+  "name": "N2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.22.5",
+    "nodemon": "^3.1.14"
+  }
+}
