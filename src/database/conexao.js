@@ -1,23 +1,23 @@
-// Importa o módulo mysql2 com suporte a Promises para utilizar async/await
+// importa o mysql2 com suporte a promises pra usar async/await
 const mysql = require('mysql2/promise');
 
-// Cria o pool de conexões com o banco de dados utilizando as credenciais definidas
+// cria a pool de conexao com as credenciais do banco
 const conexao = mysql.createPool({
-  // Define o endereço do servidor do banco de dados (padrão é localhost)
+  // host do banco de dados (local)
   host: process.env.DB_HOST || 'localhost',
-  // Define o usuário do banco de dados configurado no script SQL
+  // usuario criado no script sql
   user: process.env.DB_USER || 'escola_user',
-  // Define a senha do banco de dados configurada no script SQL
+  // senha do usuario escola_user
   password: process.env.DB_PASSWORD || 'escola_pass',
-  // Define o nome do banco de dados obrigatório 'escola'
+  // nome do banco de dados (tem q ser escola)
   database: process.env.DB_NAME || 'escola',
-  // Habilita a espera por conexões disponíveis na pool
+  // se todas as conexoes tiverem ocupadas, ele espera
   waitForConnections: true,
-  // Define o limite máximo de conexões simultâneas na pool
+  // limite maximo de conexoes simultaneas
   connectionLimit: 10,
-  // Define o limite máximo de requisições na fila de espera por conexões
+  // sem limite de fila
   queueLimit: 0
 });
 
-// Exporta o pool de conexões para que possa ser utilizado pelos modelos do sistema
+// exporta o pool pra ser usado nos models
 module.exports = conexao;

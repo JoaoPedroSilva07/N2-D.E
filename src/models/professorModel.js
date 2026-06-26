@@ -1,59 +1,59 @@
-// Importa o pool de conexões configurado no arquivo conexao.js
+// pega a conexao configurada com o mysql
 const conexao = require('../database/conexao');
 
-// Define a classe ProfessorModel para agrupar as operações de banco de dados
+// model de professores para as funçoes do banco
 class ProfessorModel {
 
-  // Método assíncrono para inserir um novo professor no banco de dados
+  // cadastra um novo professor
   static async criar(nome, disciplina, email, salario) {
-    // Define a query SQL para inserir os dados do novo professor na tabela
+    // query sql usando placeholders pra evitar sql injection
     const sql = 'INSERT INTO professores (nome, disciplina, email, salario) VALUES (?, ?, ?, ?)';
-    // Executa a query utilizando os parâmetros fornecidos e aguarda o resultado
+    // roda a query com os parametros recebidos
     const [resultado] = await conexao.execute(sql, [nome, disciplina, email, salario]);
-    // Retorna o resultado da inserção contendo o ID gerado e metadados
+    // retorna o resultado da query
     return resultado;
   }
 
-  // Método assíncrono para listar todos os professores cadastrados no banco de dados
+  // busca todos os professores do banco
   static async listarTodos() {
-    // Define a query SQL para selecionar todos os registros da tabela professores
+    // sql pra pegar tudo
     const sql = 'SELECT * FROM professores';
-    // Executa a query e aguarda o retorno das linhas encontradas
+    // executa a query e pega os resultados
     const [linhas] = await conexao.execute(sql);
-    // Retorna a lista contendo todos os registros de professores obtidos
+    // retorna a lista com todos
     return linhas;
   }
 
-  // Método assíncrono para buscar um professor específico através de seu identificador (id)
+  // busca professor especifico por id
   static async buscarPorId(id) {
-    // Define a query SQL para selecionar o professor com o ID correspondente
+    // query com where filtrando pelo id
     const sql = 'SELECT * FROM professores WHERE id = ?';
-    // Executa a query passando o ID por parâmetro para evitar SQL Injection e aguarda o resultado
+    // executa pasando o id
     const [linhas] = await conexao.execute(sql, [id]);
-    // Retorna a primeira linha encontrada ou undefined caso nenhum registro coincida
+    // retorna a primeira linha encontrada
     return linhas[0];
   }
 
-  // Método assíncrono para atualizar os dados de um professor existente no banco de dados
+  // atualiza dados do professor
   static async atualizar(id, nome, disciplina, email, salario) {
-    // Define a query SQL para atualizar os campos do professor correspondente ao ID
+    // query de update pro id correspondente
     const sql = 'UPDATE professores SET nome = ?, disciplina = ?, email = ?, salario = ? WHERE id = ?';
-    // Executa a query de atualização com os novos valores e o ID, aguardando a finalização
+    // executa passando os novos dados e o id
     const [resultado] = await conexao.execute(sql, [nome, disciplina, email, salario, id]);
-    // Retorna o resultado da operação indicando a quantidade de linhas afetadas
+    // retorna o resultado do update
     return resultado;
   }
 
-  // Método assíncrono para excluir o registro de um professor a partir de seu ID
+  // deleta um professor por id
   static async deletar(id) {
-    // Define a query SQL para deletar o registro da tabela baseado no ID fornecido
+    // query de delete
     const sql = 'DELETE FROM professores WHERE id = ?';
-    // Executa a instrução SQL de remoção de forma segura e aguarda o resultado do banco
+    // executa passando o id
     const [resultado] = await conexao.execute(sql, [id]);
-    // Retorna o resultado da operação para confirmar se o registro foi deletado com sucesso
+    // retorna o resultado do banco
     return resultado;
   }
 }
 
-// Exporta o modelo para que possa ser utilizado pelos controladores da aplicação
+// exporta o model pros controllers usarem
 module.exports = ProfessorModel;

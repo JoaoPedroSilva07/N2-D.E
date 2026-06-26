@@ -1,162 +1,162 @@
-// Importa o modelo ProfessorModel para realizar as operações de banco de dados
+// Importa o model para falar com o banco de dados
 const ProfessorModel = require('../models/professorModel');
 
-// Define a classe ProfessorController para gerenciar o fluxo de requisições e respostas da API
+// Controller pra lidar com as requisiçoes de professores
 class ProfessorController {
 
-  // Método assíncrono para cadastrar um novo professor
+  // cadastra um novo professor
   static async criar(req, res) {
-    // Bloco try-catch para capturar possíveis erros de execução ou banco de dados
+    // try catch para nao quebrar a aplicacao se der ruim no banco
     try {
-      // Desestrutura os dados enviados no corpo (body) da requisição
+      // pega os dados q vieram no corpo da requisicao
       const { nome, disciplina, email, salario } = req.body;
 
-      // Valida se os campos obrigatórios estão ausentes ou se o salário não foi definido
+      // valida se todos os campos obrigatorios foram enviados
       if (!nome || !disciplina || !email || salario === undefined || salario === null || salario === '') {
-        // Retorna status 400 (Bad Request) e uma mensagem de erro em formato JSON
+        // retorna status 400 avisando que falta campo
         return res.status(400).json({ mensagem: 'Todos os campos (nome, disciplina, email, salario) são obrigatórios.' });
       }
 
-      // Expressão regular para validar o formato do e-mail informado
+      // expressao regular simples pra testar se o email é valido
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      // Verifica se o e-mail não atende ao padrão da expressão regular
+      // se nao passar no regex, da erro
       if (!emailRegex.test(email)) {
-        // Retorna status 400 (Bad Request) indicando erro no formato do e-mail
+        // retorna bad request avisando do email
         return res.status(400).json({ mensagem: 'O formato do e-mail informado é inválido.' });
       }
 
-      // Verifica se o salário não é um número válido ou se é menor que zero
+      // valida se o salario é positivo ou se nao é um numero valido
       if (isNaN(salario) || Number(salario) < 0) {
-        // Retorna status 400 (Bad Request) indicando que o salário deve ser não-negativo
+        // da erro avisando sobre o valor do salario
         return res.status(400).json({ mensagem: 'O salário deve ser um valor numérico maior ou igual a zero.' });
       }
 
-      // Chama o modelo para persistir os dados do professor no banco e aguarda a conclusão
+      // chama o model pra inserir o registro no banco
       await ProfessorModel.criar(nome, disciplina, email, salario);
 
-      // Retorna status 201 (Created) com a mensagem de sucesso exigida pelo formato JSON do PDF
+      // retorna status 201 com a mensagem q o pdf pede
       return res.status(201).json({ mensagem: 'Professor cadastrado com sucesso' });
     } catch (erro) {
-      // Retorna status 500 (Internal Server Error) com uma mensagem em caso de falha sistêmica
+      // erro interno do servidor
       return res.status(500).json({ mensagem: 'Erro interno ao cadastrar o professor.' });
     }
   }
 
-  // Método assíncrono para listar todos os professores cadastrados
+  // lista todos os professores
   static async listarTodos(req, res) {
-    // Bloco try-catch para garantir o tratamento correto de erros durante a listagem
+    // try catch padrao pra tratar erros
     try {
-      // Solicita a lista completa de professores ao modelo e aguarda o retorno
+      // puxa todos os dados do model
       const professores = await ProfessorModel.listarTodos();
 
-      // Retorna status 200 (OK) enviando a lista obtida em formato JSON
+      // retorna a lista com status 200
       return res.status(200).json(professores);
     } catch (erro) {
-      // Retorna status 500 (Internal Server Error) com detalhes amigáveis em caso de falha no banco
+      // se der erro no select
       return res.status(500).json({ mensagem: 'Erro interno ao listar os professores.' });
     }
   }
 
-  // Método assíncrono para buscar um professor específico pelo seu ID
+  // busca um unico professor por id
   static async buscarPorId(req, res) {
-    // Bloco try-catch para capturar falhas no processo de busca individual
+    // try catch para seguranca
     try {
-      // Obtém o parâmetro id enviado através da URL da rota
+      // pega o id dos parametros da url
       const { id } = req.params;
 
-      // Chama o modelo para buscar o professor correspondente ao ID informado e aguarda
+      // busca no model filtrando pelo id
       const professor = await ProfessorModel.buscarPorId(id);
 
-      // Verifica se o professor não foi encontrado no banco de dados
+      // se nao achar nada no banco
       if (!professor) {
-        // Retorna status 404 (Not Found) informando que o registro não existe
+        // retorna status 404
         return res.status(404).json({ mensagem: 'Professor não encontrado' });
       }
 
-      // Retorna status 200 (OK) com os dados detalhados do professor em JSON
+      // se achar, devolve o objeto do professor
       return res.status(200).json(professor);
     } catch (erro) {
-      // Retorna status 500 (Internal Server Error) caso ocorra algum erro inesperado
+      // erro de conexao ou query
       return res.status(500).json({ mensagem: 'Erro interno ao buscar o professor.' });
     }
   }
 
-  // Método assíncrono para atualizar as informações de um professor existente
+  // atualiza dados do professor
   static async atualizar(req, res) {
-    // Bloco try-catch para gerenciar erros na operação de atualização
+    // try catch pra nao travar o node
     try {
-      // Obtém o parâmetro id da URL do professor que será atualizado
+      // id do professor na url
       const { id } = req.params;
-      // Desestrutura as informações enviadas no corpo da requisição que serão atualizadas
+      // novos dados no body
       const { nome, disciplina, email, salario } = req.body;
 
-      // Valida se os campos necessários para a atualização estão presentes e preenchidos
+      // valida campos obrigatorios
       if (!nome || !disciplina || !email || salario === undefined || salario === null || salario === '') {
-        // Retorna status 400 (Bad Request) alertando sobre campos ausentes
+        // erro 400 se faltar dado
         return res.status(400).json({ mensagem: 'Todos os campos (nome, disciplina, email, salario) são obrigatórios para atualização.' });
       }
 
-      // Expressão regular para validar o formato do e-mail informado na atualização
+      // valida o email de novo no update
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      // Verifica se o e-mail fornecido não cumpre com a expressão regular
+      // se nao for email valido
       if (!emailRegex.test(email)) {
-        // Retorna status 400 (Bad Request) indicando e-mail inválido
+        // bad request
         return res.status(400).json({ mensagem: 'O formato do e-mail informado é inválido.' });
       }
 
-      // Valida se o salário atualizado é um valor numérico não-negativo válido
+      // valida o salario tambem
       if (isNaN(salario) || Number(salario) < 0) {
-        // Retorna status 400 (Bad Request) informando que o valor deve ser maior ou igual a zero
+        // erro se for negativo
         return res.status(400).json({ mensagem: 'O salário deve ser um valor numérico maior ou igual a zero.' });
       }
 
-      // Busca o professor no banco antes de atualizar para validar sua existência
+      // verifica se o professor existe antes de atualizar
       const professorExistente = await ProfessorModel.buscarPorId(id);
 
-      // Se o professor não for encontrado, encerra a requisição retornando 404
+      // se nao existir
       if (!professorExistente) {
-        // Retorna o status 404 (Not Found) indicando que o professor não foi localizado
+        // retorna 404
         return res.status(404).json({ mensagem: 'Professor não encontrado' });
       }
 
-      // Executa a atualização das informações do professor chamando o modelo e aguarda
+      // atualiza de fato no banco de dados
       await ProfessorModel.atualizar(id, nome, disciplina, email, salario);
 
-      // Retorna o status 200 (OK) com a mensagem de sucesso especificada em português
+      // retorna a mensagem de atualizado com sucesso
       return res.status(200).json({ mensagem: 'Professor atualizado com sucesso' });
     } catch (erro) {
-      // Retorna o status 500 (Internal Server Error) em caso de problemas técnicos no processo
+      // se der erro na atualizacao
       return res.status(500).json({ mensagem: 'Erro interno ao atualizar o professor.' });
     }
   }
 
-  // Método assíncrono para deletar um professor a partir de seu identificador
+  // deleta professor por id
   static async deletar(req, res) {
-    // Bloco try-catch para interceptar falhas durante a remoção do registro
+    // try catch contra erros no banco
     try {
-      // Captura o id do professor passado nos parâmetros da rota
+      // pega o id na url
       const { id } = req.params;
 
-      // Verifica se o professor de fato existe no banco antes de removê-lo
+      // valida se o professor existe antes de tentar deletar
       const professorExistente = await ProfessorModel.buscarPorId(id);
 
-      // Se o professor não existir, retorna um erro amigável de não encontrado
+      // se nao achar o cara no banco
       if (!professorExistente) {
-        // Envia o status 404 (Not Found) sinalizando que o recurso não existe
+        // retorna 404
         return res.status(404).json({ mensagem: 'Professor não encontrado' });
       }
 
-      // Executa a exclusão definitiva do professor no banco de dados e aguarda
+      // deleta o registro no model
       await ProfessorModel.deletar(id);
 
-      // Retorna o status 200 (OK) com a confirmação de que o registro foi excluído com êxito
+      // sucesso na exclusao
       return res.status(200).json({ mensagem: 'Professor deletado com sucesso' });
     } catch (erro) {
-      // Retorna o status 500 (Internal Server Error) se ocorrer uma falha técnica
+      // tratamento de erro
       return res.status(500).json({ mensagem: 'Erro interno ao deletar o professor.' });
     }
   }
 }
 
-// Exporta o controlador para vincular seus métodos às rotas correspondentes
+// exporta o controller pro router
 module.exports = ProfessorController;

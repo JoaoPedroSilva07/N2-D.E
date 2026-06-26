@@ -1,26 +1,26 @@
-// Importa o módulo Express para criação da API
+// importa o express para criar a api
 const express = require('express');
-// Importa o roteador com os endpoints de professores
+// importa o arquivo de rotas
 const professorRoutes = require('./routes/professorRoutes');
 
-// Inicializa a instância da aplicação Express
+// inicializa a aplicaçao express
 const app = express();
 
-// Configura o middleware para processar requisições em formato JSON
+// middleware pra ler json no body das requisiçoes
 app.use(express.json());
 
-// Middleware customizado para logar informações de cada requisição no console
+// middleware simples de log pra ver no console oq ta acontecendo
 app.use((req, res, next) => {
-  // Obtém a data e hora atual formatada em string do sistema
+  // pega a data e hora atual do sistema
   const dataHora = new Date().toISOString();
-  // Exibe no console o timestamp, o método HTTP e a rota solicitada pelo cliente
+  // printa o metodo e a rota chamada no console
   console.log(`[${dataHora}] ${req.method} ${req.url}`);
-  // Passa o controle para o próximo middleware ou rota da aplicação
+  // continua pro proximo passo
   next();
 });
 
-// Registra as rotas importadas na aplicação
+// liga as rotas de professores na aplicacao
 app.use(professorRoutes);
 
-// Exporta a instância do aplicativo configurado para ser iniciada pelo servidor
+// exporta o app configurado pra usar no server.js
 module.exports = app;

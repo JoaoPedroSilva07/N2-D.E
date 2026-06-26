@@ -1,11 +1,11 @@
-// Importa o aplicativo express configurado a partir da pasta src
+// pega o app express pronto la da pasta src
 const app = require('./src/app');
 
-// Define a porta em que o servidor web irá rodar, utilizando variável de ambiente ou porta padrão 3000
+// porta do servidor, puxa da env ou usa a padrao 3000
 const PORT = process.env.PORT || 3000;
 
-// Inicia o servidor HTTP para escutar requisições na porta definida
+// inicia o servidor web na porta especificada
 app.listen(PORT, () => {
-  // Exibe no console uma mensagem de sucesso indicando que o servidor está pronto
+  // printa no console indicando q ta rodando certinho
   console.log(`Servidor rodando com sucesso na porta ${PORT}`);
 });

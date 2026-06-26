@@ -13,11 +13,15 @@ Esta é uma API REST simples para cadastro e gerenciamento de professores, desen
    npm install
    ```
 
-2. Configure o banco de dados utilizando o script `escola.sql` localizado na raiz do projeto:
+2. Configure o banco de dados. Você pode fazer isso importando o script `escola.sql` ou executando os comandos abaixo na raiz do projeto:
    ```bash
-   mysql -u root -p < escola.sql
+   # Cria o banco 'escola' e a tabela 'professores'
+   npm run db:setup
+
+   # Insere dados de teste iniciais no banco
+   npm run db:seed
    ```
-   *Nota: O script criará o banco `escola` e a tabela `professores`, além de configurar o usuário `escola_user` com a senha `escola_pass`.*
+   *Nota: O script SQL cria o banco, a tabela e configura o usuário de banco de dados `escola_user` com a senha `escola_pass`.*
 
 ## Como Executar
 
