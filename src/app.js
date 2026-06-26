@@ -2,6 +2,12 @@
 const express = require('express');
 // importa o arquivo de rotas
 const professorRoutes = require('./routes/professorRoutes');
+// importa rotas das disciplinas
+const disciplinaRoutes = require('./routes/disciplinaRoutes');
+// rotas de cursos
+const cursoRoutes = require('./routes/cursoRoutes');
+// rotas de alunos
+const alunoRoutes = require('./routes/alunoRoutes');
 
 // inicializa a aplicaçao express
 const app = express();
@@ -21,6 +27,12 @@ app.use((req, res, next) => {
 
 // liga as rotas de professores na aplicacao
 app.use(professorRoutes);
+// liga as rotas de disciplinas na aplicacao
+app.use(disciplinaRoutes);
+// liga rotas de cursos
+app.use(cursoRoutes);
+// liga rotas de alunos
+app.use(alunoRoutes);
 
 // exporta o app configurado pra usar no server.js
 module.exports = app;
